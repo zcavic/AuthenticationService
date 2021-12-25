@@ -1,3 +1,6 @@
 import { listen } from './app';
+import { connectToDatabase } from './repository/databaseContext';
 
-listen();
+connectToDatabase().then(() => {
+  listen();
+});
