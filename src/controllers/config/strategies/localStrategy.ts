@@ -12,7 +12,7 @@ function localStrategy() {
       (username, password, done) => {
         (async function validateUser() {
           try {
-            const user = getUser(username);
+            const user = await getUser(username);
 
             if (user && user.password === password) {
               done(null, user);
