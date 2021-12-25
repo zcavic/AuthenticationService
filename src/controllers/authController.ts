@@ -21,6 +21,10 @@ authRouter.post('/signup', async (req: express.Request, res: express.Response) =
   }
 });
 
+authRouter.get('/signIn', (req: express.Request, res: express.Response) => {
+  res.json(req.user);
+});
+
 authRouter.get('/profile', (req: express.Request, res: express.Response) => {
   res.json(req.user);
 });
