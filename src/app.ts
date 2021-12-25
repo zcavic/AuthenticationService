@@ -5,6 +5,7 @@ import session from 'express-session';
 import { authRouter } from './controllers/authController';
 import { passportConfig } from './controllers/config/passport';
 import { homePageRouter } from './controllers/homePageController';
+import { confidentialDataRouter } from './controllers/confidentialDataController';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.set('view engine', 'ejs');
 
 app.use('/', homePageRouter);
 app.use('/auth', authRouter);
+app.use('/confidential', confidentialDataRouter)
 
 function listen(): void {
   app.listen(port, () => {
