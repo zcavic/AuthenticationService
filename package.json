@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "star": "node dist/server.js",
+    "start": "node dist/server.js",
     "build": "tsc -p ."
   },
   "repository": {
