@@ -1,7 +1,10 @@
 import express from 'express';
 import passport from 'passport';
-import { User } from '../model/user';
+import { ExistingUser, User } from '../model/user';
+import { getUser, getUserByEmail, updateUser } from '../repository/userRepository';
+import { sendEmailWithResetLink } from '../services/emailService';
 import { createUser } from '../services/userService';
+import { jwtToken } from './middleware/authentication';
 
 const authRouter = express.Router();
 
@@ -35,5 +38,38 @@ authRouter
       failureRedirect: '/auth/login',
     })
   );
+
+authRouter
+  .route('/forgotPassword')
+  .get((req: express.Request, res: express.Response) => {
+    res.render('forgotPassword');
+  })
+  .post(async (req: express.Request, res: express.Response) => {
+    const { email } = req.body;
+    const user = await getUserByEmail(email);
+    if (user) {
+      await sendEmailWithResetLink(email, user.username);
+    }
+    res.redirect('/');
+  });
+
+authRouter
+  .route('/changePassword/:token')
+  .get((req: express.Request, res: express.Response) => {
+    const { token } = req.params;
+    const decoded = jwtToken.verifyToken(token);
+    res.render('changePassword', {
+      token,
+    });
+  })
+  .post(async (req: express.Request, res: express.Response) => {
+    const { password } = req.body;
+    const { token } = req.params;
+    const decoded = jwtToken.verifyToken(token);
+    const user = await getUser(decoded as string);
+    user.password = password;
+    await updateUser(user);
+    res.redirect('/auth/login');
+  });
 
 export { authRouter };

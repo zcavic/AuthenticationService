@@ -17,7 +17,7 @@ function localStrategy() {
             if (user && user.password === password) {
               done(null, user);
             } else {
-              done(null, false);
+              done('Wrong email or password', false);
             }
           } catch (error) {
             done(error, false);
