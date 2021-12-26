@@ -2,10 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
-import { authRouter } from './controllers/authController';
 import { passportConfig } from './controllers/config/passport';
-import { homePageRouter } from './controllers/homePageController';
-import { confidentialDataRouter } from './controllers/confidentialDataController';
+import { initializeRouts } from './controllers';
 
 dotenv.config();
 
@@ -20,9 +18,7 @@ passportConfig(app);
 app.set('views', './src/views');
 app.set('view engine', 'ejs');
 
-app.use('/', homePageRouter);
-app.use('/auth', authRouter);
-app.use('/confidential', confidentialDataRouter)
+initializeRouts(app);
 
 function listen(): void {
   app.listen(port, () => {

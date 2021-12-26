@@ -1,9 +1,7 @@
-import express from 'express';
+import { Request, Response } from 'express';
 
-const homePageRouter = express.Router();
-
-homePageRouter.get('/', (req: express.Request, res: express.Response) => {
+function showHomePage(req: Request, res: Response) {
   res.render('index');
-});
+}
 
-export { homePageRouter };
+export { showHomePage };
