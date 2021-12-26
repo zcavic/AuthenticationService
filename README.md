@@ -13,11 +13,10 @@ rm csr.pem
 # TODO
 
 Must:
-Reset password
 Validate input data
 Encrypt password
-Port to Azure
 
 Nice to have:
+Show status massages in browser
 Use JWT token
 Separate client app

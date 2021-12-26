@@ -1,86 +1,96 @@
-import express from 'express';
-import passport from 'passport';
+import { Request, Response, NextFunction } from 'express';
 import { User } from '../model/user';
 import { getUser, getUserByEmail, updateUser } from '../repository/userRepository';
 import { sendEmailForPasswordChange } from '../services/emailService';
 import { createUser } from '../services/userService';
 import { jwtToken } from './middleware/authentication';
 
-const authRouter = express.Router();
-
-authRouter
-  .route('/signup')
-  .get((req: express.Request, res: express.Response) => {
+function showSignupPage(req: Request, res: Response, next: NextFunction) {
+  try {
     res.render('signup');
-  })
-  .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    try {
-      const user = req.body as User;
-      const successful = await createUser(user);
-      if (successful) {
-        console.log(`The new user is created. Username: ${user.username}`);
-        req.login(req.body, () => {
-          res.redirect('/');
-        });
-      } else {
-        console.log(`The user already exist. Username: ${user.username}`);
-        res.redirect('/auth/signup');
-      }
-    } catch (e) {
-      next(e);
-    }
-  });
+  } catch (e) {
+    next(e);
+  }
+}
 
-authRouter
-  .route('/login')
-  .get((req: express.Request, res: express.Response) => {
+async function signupUser(req: Request, res: Response, next: NextFunction) {
+  try {
+    const user = req.body as User;
+    const successful = await createUser(user);
+    if (successful) {
+      console.log(`The new user is created. Username: ${user.username}`);
+      req.login(req.body, () => {
+        res.redirect('/');
+      });
+    } else {
+      console.log(`The user already exist. Username: ${user.username}`);
+      res.redirect('/auth/signup');
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
+function showLoginPage(req: Request, res: Response, next: NextFunction) {
+  try {
     res.render('login');
-  })
-  .post(
-    passport.authenticate('local', {
-      successRedirect: '/confidential',
-      failureRedirect: '/auth/login',
-    })
-  );
+  } catch (e) {
+    next(e);
+  }
+}
 
-authRouter
-  .route('/forgotPassword')
-  .get((req: express.Request, res: express.Response) => {
+function showResetPasswordPage(req: Request, res: Response, next: NextFunction) {
+  try {
     res.render('forgotPassword');
-  })
-  .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    try {
-      const { email } = req.body;
-      const user = await getUserByEmail(email);
-      if (user) {
-        await sendEmailForPasswordChange(email, user.username);
-      }
-      res.redirect('/');
-    } catch (e) {
-      next(e);
-    }
-  });
+  } catch (e) {
+    next(e);
+  }
+}
 
-authRouter
-  .route('/changePassword/:token')
-  .get((req: express.Request, res: express.Response) => {
+async function sendResetPasswordEmail(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { email } = req.body;
+    const user = await getUserByEmail(email);
+    if (user) {
+      await sendEmailForPasswordChange(email, user.username);
+    }
+    res.redirect('/');
+  } catch (e) {
+    next(e);
+  }
+}
+
+function showChangePasswordPage(req: Request, res: Response, next: NextFunction) {
+  try {
+  } catch (e) {
+    next(e);
+  }
+  const { token } = req.params;
+  res.render('changePassword', {
+    token,
+  });
+}
+
+async function updatePassword(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { password } = req.body;
     const { token } = req.params;
-    res.render('changePassword', {
-      token,
-    });
-  })
-  .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    try {
-      const { password } = req.body;
-      const { token } = req.params;
-      const decoded = jwtToken.verifyToken(token);
-      const user = await getUser(decoded as string);
-      user.password = password;
-      await updateUser(user);
-      res.redirect('/auth/login');
-    } catch (e) {
-      next(e);
-    }
-  });
+    const decoded = jwtToken.verifyToken(token);
+    const user = await getUser(decoded as string);
+    user.password = password;
+    await updateUser(user);
+    res.redirect('/auth/login');
+  } catch (e) {
+    next(e);
+  }
+}
 
-export { authRouter };
+export {
+  showSignupPage,
+  signupUser,
+  showLoginPage,
+  showResetPasswordPage,
+  sendResetPasswordEmail,
+  showChangePasswordPage,
+  updatePassword,
+};

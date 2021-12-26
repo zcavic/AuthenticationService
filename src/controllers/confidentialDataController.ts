@@ -1,17 +1,11 @@
-import express from 'express';
+import { Request, Response, NextFunction } from 'express';
 
-const confidentialDataRouter = express.Router();
-
-confidentialDataRouter.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-  if (req.user) {
-    next();
-  } else {
-    res.redirect('/');
+function showConfidentialPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.render('confidentialData');
+  } catch (e) {
+    next(e);
   }
-});
+}
 
-confidentialDataRouter.route('/').get((req: express.Request, res: express.Response) => {
-  res.render('confidentialData');
-});
-
-export { confidentialDataRouter };
+export { showConfidentialPage };

@@ -17,4 +17,9 @@ function passportConfig(app: Express) {
   });
 }
 
-export { passportConfig };
+const passportLogin = passport.authenticate('local', {
+  successRedirect: '/confidential',
+  failureRedirect: '/auth/login',
+});
+
+export { passportConfig, passportLogin };

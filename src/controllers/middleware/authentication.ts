@@ -17,7 +17,7 @@ const jwtToken = {
   },
 };
 
-function authenticate(req: Request, res: Response, next: NextFunction) {
+function authenticateJwt(req: Request, res: Response, next: NextFunction) {
   if (!req.headers.authorization) {
     return res.status(401).send({ error: 'Unauthorized' });
   }
@@ -34,6 +34,14 @@ function authenticate(req: Request, res: Response, next: NextFunction) {
       return next();
     });
   });
+}
+
+function authenticate(req: Request, res: Response, next: NextFunction) {
+  if (req.user) {
+    next();
+  } else {
+    res.redirect('/auth/login');
+  }
 }
 
 export { jwtToken, hashPassword, comparePassword, authenticate };

@@ -1,9 +1,11 @@
-import express from 'express';
+import { Request, Response, NextFunction } from 'express';
 
-const homePageRouter = express.Router();
+function showHomePage(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.render('index');
+  } catch (e) {
+    next(e);
+  }
+}
 
-homePageRouter.get('/', (req: express.Request, res: express.Response) => {
-  res.render('index');
-});
-
-export { homePageRouter };
+export { showHomePage };
