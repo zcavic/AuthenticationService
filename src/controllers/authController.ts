@@ -1,8 +1,8 @@
 import express from 'express';
 import passport from 'passport';
-import { ExistingUser, User } from '../model/user';
+import { User } from '../model/user';
 import { getUser, getUserByEmail, updateUser } from '../repository/userRepository';
-import { sendEmailWithResetLink } from '../services/emailService';
+import { sendEmailForPasswordChange } from '../services/emailService';
 import { createUser } from '../services/userService';
 import { jwtToken } from './middleware/authentication';
 
@@ -48,7 +48,7 @@ authRouter
     const { email } = req.body;
     const user = await getUserByEmail(email);
     if (user) {
-      await sendEmailWithResetLink(email, user.username);
+      await sendEmailForPasswordChange(email, user.username, req.rawHeaders[17]);
     }
     res.redirect('/');
   });
@@ -57,7 +57,6 @@ authRouter
   .route('/changePassword/:token')
   .get((req: express.Request, res: express.Response) => {
     const { token } = req.params;
-    const decoded = jwtToken.verifyToken(token);
     res.render('changePassword', {
       token,
     });

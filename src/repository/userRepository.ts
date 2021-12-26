@@ -1,15 +1,14 @@
-import { ExistingUser, User } from '../model/user';
+import { User } from '../model/user';
 import { collections } from '../repository/databaseContext';
-import { ObjectId } from 'mongodb';
 
 async function getUser(username: string) {
   const user = await collections.user?.findOne({ username: username });
-  return user as unknown as ExistingUser;
+  return user as unknown as User;
 }
 
 async function getUserByEmail(email: string) {
   const user = await collections.user?.findOne({ email: email });
-  return user as unknown as ExistingUser;
+  return user as unknown as User;
 }
 
 function isUserCreated(user: User) {
@@ -28,10 +27,10 @@ async function getAllUsers() {
   return users;
 }
 
-async function updateUser(user: ExistingUser) {
+async function updateUser(user: User) {
   const query = { username: user.username };
   const result = await collections.user?.updateOne(query, {
-    $set: user as User,
+    $set: user,
   });
   if (!result) throw new Error('Failed to upload database.');
   return result.acknowledged;

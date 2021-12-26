@@ -1,11 +1,10 @@
 import { jwtToken } from '../controllers/middleware/authentication';
-import { User } from '../model/user';
 import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
 
 dotenv.config();
-console.log('email service')
-console.log(process.env.SENDGRID_API_KEY)
+console.log('email service');
+console.log(process.env.SENDGRID_API_KEY);
 sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
 const sendEmail = (receiver: string, source: string, subject: string, content: string) => {
@@ -22,9 +21,9 @@ const sendEmail = (receiver: string, source: string, subject: string, content: s
   }
 };
 
-async function sendEmailWithResetLink(email: string, username: string) {
+async function sendEmailForPasswordChange(email: string, username: string, url: string) {
   const token = jwtToken.createToken(username);
-  const link = `$http://localhost:5000/auth/resetPassword/${token}`;
+  const link = `${url}/auth/changePassword/${token}`;
   sendEmail(
     email,
     'sirius.bent@gmail.com',
@@ -37,4 +36,4 @@ async function sendEmailWithResetLink(email: string, username: string) {
   return true;
 }
 
-export { sendEmailWithResetLink };
+export { sendEmailForPasswordChange };
