@@ -1,5 +1,11 @@
 {
     "cSpell.words": [
         "authenticationservice"
-    ]
+    ],
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/d8c57724-6ced-480f-8108-11d2e32d4ed5/resourceGroups/authService/providers/Microsoft.Web/sites/authServicePS",
+    "appService.deploySubpath": "."
 }

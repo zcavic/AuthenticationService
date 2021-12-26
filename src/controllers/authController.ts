@@ -13,17 +13,21 @@ authRouter
   .get((req: express.Request, res: express.Response) => {
     res.render('signup');
   })
-  .post(async (req: express.Request, res: express.Response) => {
-    const user = req.body as User;
-    const successful = await createUser(user);
-    if (successful) {
-      console.log(`The new user is created. Username: ${user.username}`);
-      req.login(req.body, () => {
-        res.redirect('/');
-      });
-    } else {
-      console.log(`The user already exist. Username: ${user.username}`);
-      res.redirect('/auth/signup');
+  .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    try {
+      const user = req.body as User;
+      const successful = await createUser(user);
+      if (successful) {
+        console.log(`The new user is created. Username: ${user.username}`);
+        req.login(req.body, () => {
+          res.redirect('/');
+        });
+      } else {
+        console.log(`The user already exist. Username: ${user.username}`);
+        res.redirect('/auth/signup');
+      }
+    } catch (e) {
+      next(e);
     }
   });
 
@@ -44,13 +48,17 @@ authRouter
   .get((req: express.Request, res: express.Response) => {
     res.render('forgotPassword');
   })
-  .post(async (req: express.Request, res: express.Response) => {
-    const { email } = req.body;
-    const user = await getUserByEmail(email);
-    if (user) {
-      await sendEmailForPasswordChange(email, user.username, req.rawHeaders[17]);
+  .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    try {
+      const { email } = req.body;
+      const user = await getUserByEmail(email);
+      if (user) {
+        await sendEmailForPasswordChange(email, user.username);
+      }
+      res.redirect('/');
+    } catch (e) {
+      next(e);
     }
-    res.redirect('/');
   });
 
 authRouter
@@ -61,14 +69,18 @@ authRouter
       token,
     });
   })
-  .post(async (req: express.Request, res: express.Response) => {
-    const { password } = req.body;
-    const { token } = req.params;
-    const decoded = jwtToken.verifyToken(token);
-    const user = await getUser(decoded as string);
-    user.password = password;
-    await updateUser(user);
-    res.redirect('/auth/login');
+  .post(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    try {
+      const { password } = req.body;
+      const { token } = req.params;
+      const decoded = jwtToken.verifyToken(token);
+      const user = await getUser(decoded as string);
+      user.password = password;
+      await updateUser(user);
+      res.redirect('/auth/login');
+    } catch (e) {
+      next(e);
+    }
   });
 
 export { authRouter };

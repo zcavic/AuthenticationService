@@ -3,8 +3,6 @@ import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
 
 dotenv.config();
-console.log('email service');
-console.log(process.env.SENDGRID_API_KEY);
 sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
 const sendEmail = (receiver: string, source: string, subject: string, content: string) => {
@@ -21,9 +19,9 @@ const sendEmail = (receiver: string, source: string, subject: string, content: s
   }
 };
 
-async function sendEmailForPasswordChange(email: string, username: string, url: string) {
+async function sendEmailForPasswordChange(email: string, username: string) {
   const token = jwtToken.createToken(username);
-  const link = `${url}/auth/changePassword/${token}`;
+  const link = `${process.env.DOMAIN_URL as string}/auth/changePassword/${token}`;
   sendEmail(
     email,
     'sirius.bent@gmail.com',
