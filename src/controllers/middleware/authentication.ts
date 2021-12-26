@@ -9,16 +9,15 @@ const comparePassword = (password: string, hash: string) => bcrypt.compareSync(p
 
 const jwtToken = {
   createToken(username: string) {
-    const token = jwt.sign(username, process.env.JWT_SECRET as string);
-    return token;
+    return jwt.sign(username, process.env.JWT_SECRET as string);
   },
   verifyToken(token: string) {
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET as string);
-    return decodedToken;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+    return decoded;
   },
 };
 
-function authenticateJwt(req: Request, res: Response, next: NextFunction) {
+function authenticate(req: Request, res: Response, next: NextFunction) {
   if (!req.headers.authorization) {
     return res.status(401).send({ error: 'Unauthorized' });
   }
@@ -37,12 +36,4 @@ function authenticateJwt(req: Request, res: Response, next: NextFunction) {
   });
 }
 
-function authenticateBasic(req: Request, res: Response, next: NextFunction) {
-  if (req.user) {
-    next();
-  } else {
-    res.redirect('/');
-  }
-}
-
-export { jwtToken, hashPassword, comparePassword, authenticateJwt, authenticateBasic };
+export { jwtToken, hashPassword, comparePassword, authenticate };

@@ -6,4 +6,8 @@ interface User {
   password: string;
 }
 
-export { User };
+interface ExistingUser extends User {
+  id: string;
+}
+
+export { User, ExistingUser };
