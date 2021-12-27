@@ -1,22 +1,25 @@
-# AuthenticationService
+### How to run api locally
 
-To generate a self-signed certificate, run the following in your shell:
+- Step 1 - Clone the git repository
 
-```bash
-openssl genrsa -out key.pem
-openssl req -new -key key.pem -out csr.pem
-openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
-rm csr.pem
-```
+- Step 2 - Paste .env file into the repository folder
 
+- Step 3 - Open CMD from repository folder and install npm package
+  ```
+  npm install
+  npm run build
+  npm start
+  ```
+- Step 4 - Open link in the browser
+  ```
+  http://localhost:5000/
+  ```
 
-# TODO
+# Future improvement
 
-Must:
-Validate input data
-Encrypt password
-
-Nice to have:
-Show status massages in browser
-Use JWT token
-Separate client app
+- Improve UX: status massages in browser
+- Improve authentication mechanism
+- Separate client app from webApi
+- Build docker image
+- Configure CICD pipeline
+- Automated tests
