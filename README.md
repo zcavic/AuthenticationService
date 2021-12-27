@@ -1,24 +1,34 @@
 ## How to run api locally
 
-- Step 1 - Clone the git repository
+Step 1 - Clone the git repository
 
-- Step 2 - Open cmd and check the node version. Node 14 (or newer) is required
+Step 2 - Open cmd and check the node version. Node 14 (or newer) is required
   ```
   node -v
   ```
 
-- Step 2 - Paste .env file into the repository folder
+Step 2 - Paste .env file into the repository folder
 
-- Step 4 - Open CMD from repository folder and install npm package
+Step 4 - Open CMD from repository folder and install npm package
   ```
   npm install
   npm run build
   npm start
   ```
-- Step 5 - Open link in the browser
+Step 5 - Open link in the browser
   ```
   http://localhost:5000/
   ```
+  
+## Architecture
+
+#### Clean architecture
+
+![alt text](https://github.com/zcavic/AuthenticationService/blob/main/documentation/AuthServicePS-Arch.png?raw=true)
+
+#### Sequential diagram for reset password
+
+![alt text](https://github.com/zcavic/AuthenticationService/blob/main/documentation/AuthServicePS-Seq.png?raw=true)
 
 # APIs
 
