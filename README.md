@@ -1,3 +1,10 @@
+## How to run api
+
+The web service is hosted on Azure appService.
+  ```
+  https://authserviceps.azurewebsites.net/
+  ```
+
 ## How to run api locally
 
 Step 1 - Clone the git repository
@@ -92,11 +99,35 @@ Save the new password
 POST /auth/changePassword/:token
 ```
 
+## What is done
+
+Create a new user:
+ - Basic html for that purpose
+ - Required email, password & full name
+ - User is saved into database after creation
+
+Login the user
+ - Basic html for that purpose
+ - Required email, password
+ - Validate the user info
+ - Fail the API on mismatch
+ - Redirect the user to the confidental data page
+ 
+ Reset password
+  - Basic html for that purpose
+  - User will need to provide his email
+  - The email is sent by SendGrid to the user email with a reset password link 
+  - Clicking on the link allows the user to change the previous password
+  - When the user change the password, user will be redirected to the login page
+
+Testing tool:
+  - Postman
+ 
 ## Future improvement
 
+- Use JWT token for authentication mechanism
+- Automated tests
 - Improve UX: status massages in browser
-- Improve authentication mechanism
 - Separate client app from webApi
 - Build docker image
 - Configure CICD pipeline
-- Automated tests
