@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { User } from '../model/user';
-import { getUser, getUserByEmail, updateUser } from '../repository/userRepository';
 import { sendEmailForPasswordChange } from '../services/emailService';
-import { createUser } from '../services/userService';
+import { createUser, setNewPassword } from '../services/userService';
 import { jwtToken } from './middleware/authentication';
 
 function showSignupPage(req: Request, res: Response, next: NextFunction) {
@@ -16,15 +15,13 @@ function showSignupPage(req: Request, res: Response, next: NextFunction) {
 async function signupUser(req: Request, res: Response, next: NextFunction) {
   try {
     const user = req.body as User;
-    const successful = await createUser(user);
-    if (successful) {
+    if (await createUser(user)) {
       console.log(`The new user is created. Username: ${user.username}`);
       req.login(req.body, () => {
         res.redirect('/');
       });
     } else {
-      console.log(`The user already exist. Username: ${user.username}`);
-      res.redirect('/auth/signup');
+      res.status(400).send({ error: `The user or email already registered. ${user.username} ${user.email}` });
     }
   } catch (e) {
     next(e);
@@ -50,11 +47,8 @@ function showResetPasswordPage(req: Request, res: Response, next: NextFunction) 
 async function sendResetPasswordEmail(req: Request, res: Response, next: NextFunction) {
   try {
     const { email } = req.body;
-    const user = await getUserByEmail(email);
-    if (user) {
-      await sendEmailForPasswordChange(email, user.username);
-    }
-    res.redirect('/');
+    if (await sendEmailForPasswordChange(email)) res.redirect('/');
+    else res.status(400).send({ error: 'Not registered email.' });
   } catch (e) {
     next(e);
   }
@@ -62,24 +56,22 @@ async function sendResetPasswordEmail(req: Request, res: Response, next: NextFun
 
 function showChangePasswordPage(req: Request, res: Response, next: NextFunction) {
   try {
+    const { token } = req.params;
+    res.render('changePassword', {
+      token,
+    });
   } catch (e) {
     next(e);
   }
-  const { token } = req.params;
-  res.render('changePassword', {
-    token,
-  });
 }
 
 async function updatePassword(req: Request, res: Response, next: NextFunction) {
   try {
     const { password } = req.body;
     const { token } = req.params;
-    const decoded = jwtToken.verifyToken(token);
-    const user = await getUser(decoded as string);
-    user.password = password;
-    await updateUser(user);
-    res.redirect('/auth/login');
+    const username = jwtToken.verifyToken(token);
+    if (await setNewPassword(username as string, password)) res.redirect('/auth/login');
+    else return res.status(400).send({ error: 'Password is same.' });
   } catch (e) {
     next(e);
   }

@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy } from 'passport-local';
 import { getUser } from '../../../repository/userRepository';
+import { comparePassword, hashPassword } from '../../middleware/authentication';
 
 function localStrategy() {
   passport.use(
@@ -13,8 +14,7 @@ function localStrategy() {
         (async function validateUser() {
           try {
             const user = await getUser(username);
-
-            if (user && user.password === password) {
+            if (user && comparePassword(password, user.password)) {
               done(null, user);
             } else {
               done('Wrong email or password', false);

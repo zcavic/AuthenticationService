@@ -3,7 +3,7 @@ import { Express } from 'express';
 import { showConfidentialPage } from './confidentialDataController';
 import { authenticate } from './middleware/authentication';
 import { showHomePage } from './homePageController';
-import { validateLogin, validateSignup } from './middleware/validations';
+import { validateLogin, validatePassword, validateEmail, validateSignup } from './middleware/validations';
 import {
   sendResetPasswordEmail,
   showChangePasswordPage,
@@ -19,9 +19,8 @@ function routesConfig(app: Express) {
   app.route('/confidential').get(authenticate, showConfidentialPage);
   app.route('/auth/signup').get(showSignupPage).post(validateSignup, signupUser);
   app.route('/auth/login').get(showLoginPage).post(validateLogin, passportLogin);
-  app.route('/auth/forgotPassword').get(showResetPasswordPage).post(sendResetPasswordEmail);
-  app.route('/auth/changePassword/:token').get(showChangePasswordPage).post(updatePassword);
-  app.route('/auth/changePassword/:token').get(showChangePasswordPage).post(updatePassword);
+  app.route('/auth/forgotPassword').get(showResetPasswordPage).post(validateEmail, sendResetPasswordEmail);
+  app.route('/auth/changePassword/:token').get(showChangePasswordPage).post(validatePassword, updatePassword);
 }
 
 export { routesConfig };

@@ -11,11 +11,6 @@ async function getUserByEmail(email: string) {
   return user as unknown as User;
 }
 
-function isUserCreated(user: User) {
-  if (user) return true;
-  else return false;
-}
-
 async function addUser(user: User) {
   const result = await collections.user?.insertOne(user);
   if (!result) throw new Error(`Failed to add user to the database. User: ${JSON.stringify(user)}`);
@@ -36,4 +31,4 @@ async function updateUser(user: User) {
   return result.acknowledged;
 }
 
-export { isUserCreated, getUser, addUser, getAllUsers, getUserByEmail, updateUser };
+export { getUser, addUser, getAllUsers, getUserByEmail, updateUser };
