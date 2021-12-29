@@ -14,9 +14,9 @@ Step 2 - Open cmd and check the node version. Node 14 (or newer) is required
   node -v
   ```
 
-Step 2 - Paste .env file into the repository folder
+Step 2 - Paste [.env](https://drive.google.com/drive/folders/1FUgprbfIlTmGLC1suaLDq31dvTww-m61?usp=sharing) file into the repository folder
 
-Step 4 - Open CMD from repository folder and install npm package
+Step 4 - Open CMD from repository folder and run the npm commands
   ```
   npm install
   npm run build
